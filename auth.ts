@@ -25,13 +25,10 @@ export const {
   },
   callbacks: {
     async signIn({ user, account }) {
-      // allow Oauth without verifying
       if (account?.provider !== "credentials") return true;
 
       const existingUser = await getUserById(user.id!);
-
-      // prevent signin without verifying
-      if (!existingUser?.emailVerified) return false;
+      if (!existingUser) return false;
 
       // if (existingUser.isTwoFactorEnabled) {
       //   const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(
