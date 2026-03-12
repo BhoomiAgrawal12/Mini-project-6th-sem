@@ -121,38 +121,27 @@ export default function DetailedAssessment({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ diseases, responses: {} }),
         });
-        
+
         if (!res.ok) throw new Error(`Error ${res.status}: ${await res.text()}`);
-for(let i=0; i<diseases.length; i++) {
-  const taskResponse =  await fetch("/api/tasks/assign", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ disease: diseases[i], severity: "mild"}),
-  });
 
-  
-  if (!taskResponse.ok) {
-    const errorText = await taskResponse.text();
-    throw new Error(`Error ${taskResponse.status}: ${errorText}`);
-  }
-
-}
-        
-
-        for(let i=0; i<diseases.length; i++) {
-          const ytResponse =  await fetch("/api/youtube-activities/assign", {
+        for (let i = 0; i < diseases.length; i++) {
+          const taskResponse = await fetch("/api/tasks/assign", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ disease: diseases[i], severity: "mild"}),
+            body: JSON.stringify({ disease: diseases[i], severity: "mild" }),
           });
+          if (!taskResponse.ok) {
+            const errorText = await taskResponse.text();
+            throw new Error(`Error ${taskResponse.status}: ${errorText}`);
+          }
         }
 
-     
-
-
-        if (!res.ok) {
-          const errorText = await res.text();
-          throw new Error(`Error ${res.status}: ${errorText}`);
+        for (let i = 0; i < diseases.length; i++) {
+          await fetch("/api/youtube-activities/assign", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ disease: diseases[i], severity: "mild" }),
+          });
         }
 
         const data = await res.json();
@@ -181,15 +170,14 @@ for(let i=0; i<diseases.length; i++) {
     if (!input.trim()) return;
     const currentDisease = diseases[currentDiseaseIndex];
     const currentQuestion = questions[currentDisease]?.[currentQuestionIndex];
+
+    // Build updated responses synchronously so we always have the latest answer
+    const updatedResponses = { ...responses, [currentQuestion]: input };
+
     setMessages(prev => [...prev, { id: Date.now().toString(), text: input, sender: "user" }]);
-    
-    setResponses(prev => ({
-      ...prev,
-      [currentQuestion]: input }
-    ));
-    
+    setResponses(updatedResponses);
     setInput("");
-    
+
     const nextQuestionIndex = currentQuestionIndex + 1;
     if (nextQuestionIndex < questions[currentDisease]?.length) {
       setTimeout(() => {
@@ -205,7 +193,8 @@ for(let i=0; i<diseases.length; i++) {
         setMessages(prev => [...prev, { id: Date.now().toString(), text: questions[nextDisease][0], sender: "bot" }]);
       }, 500);
     } else {
-      onComplete(responses);
+      // Pass the synchronously-built responses so the last answer is included
+      onComplete(updatedResponses);
     }
   };
 

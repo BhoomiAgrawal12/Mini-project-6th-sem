@@ -18,8 +18,8 @@ export async function POST(req: Request) {
 
     console.log("GAME NAME " + gameId);
 
-    // Validate required fields
-    if (!userId || !gameId || !score || !completion || !timeSpent) {
+    // Validate required fields (score/timeSpent can be 0, completion can be false)
+    if (!userId || !gameId || score == null || completion == null) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
