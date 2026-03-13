@@ -131,6 +131,8 @@ const SymptomChecker: React.FC<SymptomCheckerProps> = ({
   updateDiseasePossibility,
 }) => {
   const [searched, setSearched] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   const API_URL = 'https://telmedsphere.onrender.com/predict';
 
   const addSymptom = (symptom: string) => {
@@ -145,16 +147,27 @@ const SymptomChecker: React.FC<SymptomCheckerProps> = ({
   };
 
   const sendSymptoms = async () => {
+    setLoading(true);
+    setError(null);
     try {
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userSymptoms),
       });
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
       const result = await response.json();
+      if (!Array.isArray(result)) {
+        throw new Error('Unexpected response format from prediction API');
+      }
       updateDiseasePossibility(result as DiseasePrediction[]);
-    } catch (error) {
-      console.error('Error sending symptoms:', error);
+    } catch (err) {
+      console.error('Error sending symptoms:', err);
+      setError(err instanceof Error ? err.message : 'Failed to get prediction. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -225,23 +238,29 @@ const SymptomChecker: React.FC<SymptomCheckerProps> = ({
         </div>
       </div>
 
+      {/* Error Message */}
+      {error && (
+        <p className="text-red-600 text-sm mb-4 bg-red-50 border border-red-200 rounded-lg px-4 py-2">{error}</p>
+      )}
+
       {/* Buttons */}
       <div className="flex gap-4">
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={sendSymptoms}
-          disabled={userSymptoms.length === 0}
+          disabled={userSymptoms.length === 0 || loading}
           className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
-          Analyze Symptoms
+          {loading ? 'Analyzing...' : 'Analyze Symptoms'}
         </motion.button>
-        
+
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => updateSymptoms([])}
-          className="px-6 py-3 border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+          disabled={loading}
+          className="px-6 py-3 border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 transition-colors disabled:opacity-50"
         >
           Reset
         </motion.button>

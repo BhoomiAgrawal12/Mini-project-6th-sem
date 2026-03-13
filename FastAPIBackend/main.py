@@ -5,6 +5,7 @@ from pydantic import BaseModel
 import os
 import re
 import json
+import time
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -37,11 +38,30 @@ GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 
 llm = ChatGoogleGenerativeAI(
-    model="gemini-2.0-flash",
+    model="gemini-1.5-flash-8b",
     temperature=0.7,
     google_api_key=GOOGLE_API_KEY,
-    # system_message=system_prompt
-) 
+)
+
+def invoke_with_retry(prompt, max_retries=3):
+    """Invoke LLM with exponential backoff on rate limit errors."""
+    for attempt in range(max_retries):
+        try:
+            return llm.invoke(prompt)
+        except Exception as e:
+            err_str = str(e)
+            if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
+                if attempt < max_retries - 1:
+                    wait_time = 2 ** attempt * 10  # 10s, 20s, 40s
+                    print(f"Rate limit hit. Retrying in {wait_time}s (attempt {attempt + 1}/{max_retries})")
+                    time.sleep(wait_time)
+                else:
+                    raise HTTPException(
+                        status_code=429,
+                        detail="AI service is temporarily unavailable due to rate limits. Please try again in a minute."
+                    )
+            else:
+                raise
 class ScreeningRequest(BaseModel):
     responses: Dict[str, str]
 
@@ -216,7 +236,7 @@ async def generate_diet_chart(request: DetailedAssessmentRequest):
             {"role": "user", "content": "What should my diet plan be?"}
         ]
 
-        response = llm.invoke(chat_history)
+        response = invoke_with_retry(chat_history)
         print("Raw LLM Response:", response)
 
         # response_text = response.content if hasattr(response, "content") else str(response)
@@ -300,7 +320,7 @@ async def chat(request: chatRequest):
          {formatted_history}
           """
 
-        response = llm.invoke(final_prompt)
+        response = invoke_with_retry(final_prompt)
         if not response:
          raise HTTPException(status_code=500, detail="LLM returned empty response")
        

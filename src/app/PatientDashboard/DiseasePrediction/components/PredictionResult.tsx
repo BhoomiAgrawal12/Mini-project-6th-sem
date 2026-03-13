@@ -8,7 +8,7 @@ import type { PredictionResultProps } from '../types';
 
 const PredictionResult: React.FC<PredictionResultProps> = ({ diseasePossibility }) => {
   const sortedDiseases = [...diseasePossibility]
-    .filter(d => d.probability)
+    .filter(d => d.probability != null && d.probability > 0)
     .sort((a, b) => b.probability - a.probability);
 
   const handleDownload = () => {
