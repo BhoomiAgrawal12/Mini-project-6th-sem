@@ -206,7 +206,7 @@ export default function DetailedAssessment({
             <div className="flex items-center justify-center rounded-2xl text-indigo-700 bg-indigo-100 h-10 w-10">
               <Stethoscope className="w-6 h-6" />
             </div>
-            <div className="ml-2 font-bold text-blue-700 text-4xl">Swasthika AI Chat</div>
+            <div className="ml-2 font-bold text-blue-700 text-4xl">MediMind AI Chat</div>
           </div>
           {error && <div className="text-red-500 text-center">{error}</div>}
           <div className="flex flex-col space-y-2 overflow-auto h-full">
@@ -362,7 +362,7 @@ export default function DetailedAssessment({
 //             <div className="flex items-center justify-center rounded-2xl text-indigo-700 bg-indigo-100 h-10 w-10">
 //               <Stethoscope className="w-6 h-6" />
 //             </div>
-//             <div className="ml-2 font-bold text-blue-700 text-4xl">Swasthika AI Chat</div>
+//             <div className="ml-2 font-bold text-blue-700 text-4xl">MediMind AI Chat</div>
 //           </div>
 
 //           <div className="flex flex-col h-full overflow-y-auto mb-4">

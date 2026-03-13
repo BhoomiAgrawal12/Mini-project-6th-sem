@@ -113,7 +113,7 @@
 //             <div className="flex items-center justify-center rounded-2xl text-indigo-700 bg-indigo-100 h-10 w-10">
 //               <Stethoscope className="w-6 h-6" />
 //             </div>
-//             <div className="ml-2 font-bold text-blue-700 text-4xl">Swasthika AI Chat</div>
+//             <div className="ml-2 font-bold text-blue-700 text-4xl">MediMind AI Chat</div>
 //           </div>
 //       <div className="border p-4 bg-white rounded-lg max-h-[60vh] overflow-y-auto space-y-3">
 //         {chatHistory.map((msg, index) => (
@@ -207,7 +207,7 @@ export default function Chat({ diseases, responses }: ChatProps) {
         <div className="flex items-center justify-center rounded-full text-indigo-700 bg-indigo-100 h-12 w-12">
           <Stethoscope className="w-6 h-6" />
         </div>
-        <h1 className="ml-3 font-bold text-blue-700 text-3xl">Swasthika AI Chat</h1>
+        <h1 className="ml-3 font-bold text-blue-700 text-3xl">MediMind AI Chat</h1>
       </div>
 
       {/* Chat Container */}

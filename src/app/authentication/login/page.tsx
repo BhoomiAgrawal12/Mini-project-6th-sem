@@ -31,7 +31,7 @@ const Login2 = () => {
             }
             subtitle={
               <div className="flex justify-center space-x-1 mt-6">
-                <p className="text-gray-600">New to Swasthika?</p>
+                <p className="text-gray-600">New to MediMind?</p>
                 <Link
                   href="/authentication/register"
                   className="text-blue-500 hover:underline"

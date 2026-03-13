@@ -160,7 +160,7 @@ export default function ChatScreening({ onDetectedDiseases }: { onDetectedDiseas
             <div className="flex items-center justify-center mb-8 rounded-2xl text-indigo-700 bg-indigo-100 h-10 w-10">
               <Stethoscope className="w-6 h-6" />
             </div>
-            <div className="ml-2 font-bold text-blue-700 mb-8 text-4xl">Swasthika AI Chat</div>
+            <div className="ml-2 font-bold text-blue-700 mb-8 text-4xl">MediMind AI Chat</div>
           </div>
           <div className="flex flex-col h-full overflow-y-auto mb-4">
             <div className="grid grid-cols-4 gap-y-2">

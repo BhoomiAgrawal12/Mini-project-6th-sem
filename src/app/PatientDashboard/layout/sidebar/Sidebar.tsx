@@ -89,7 +89,7 @@
 //               themeSecondaryColor="#49beff"
 //               showProfile={false}
 //             >
-//               <div className="h-200px w-200px">Swasthika👩‍⚕️</div>
+//               <div className="h-200px w-200px">MediMind👩‍⚕️</div>
 //               <SidebarItems toggleMobileSidebar={function (): void {
 //                   throw new Error("Function not implemented.");
 //                 } } />
@@ -161,7 +161,7 @@ const MSidebar = ({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }: ItemTy
                
               >
                 <Box>
-                <h1 className="text-2xl font-extrabold text-blue-600 text-center mt-4 mb-4">Swasthika 👩‍⚕️</h1>
+                <h1 className="text-2xl font-extrabold text-blue-600 text-center mt-4 mb-4">MediMind 👩‍⚕️</h1>
                   <SidebarItems toggleMobileSidebar={() => {}} />
                   <Upgrade />
                 </Box>

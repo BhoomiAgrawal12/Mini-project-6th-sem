@@ -1,8 +1,8 @@
-# Swasthika — AI-Powered Mental Health Rehabilitation Platform
+# MediMind — AI-Powered Mental Health Rehabilitation Platform
 
 ## Overview
 
-**Swasthika** is an AI-powered platform that offers intelligent and personalized mental health rehabilitation. It combines clinical psychology principles with modern AI to support users dealing with **PTSD, addiction, social anxiety, depression, binge eating, obesity**, and more.
+**MediMind** is an AI-powered platform that offers intelligent and personalized mental health rehabilitation. It combines clinical psychology principles with modern AI to support users dealing with **PTSD, addiction, social anxiety, depression, binge eating, obesity**, and more.
 
 It features **gamified recovery modules**, **personalized diet charts** , **symptom based disease prediction**, and an **AI chatbot** that simulates therapeutic sessions based on user input, encouraging consistent engagement and emotional wellness.
 
@@ -16,7 +16,7 @@ It features **gamified recovery modules**, **personalized diet charts** , **symp
 
 ## Video Demo
 
-[![Swasthika Demo Video](https://img.youtube.com/vi/pXk0scN35GI/0.jpg)](https://www.youtube.com/watch?v=pXk0scN35GI)
+[![MediMind Demo Video](https://img.youtube.com/vi/pXk0scN35GI/0.jpg)](https://www.youtube.com/watch?v=pXk0scN35GI)
 
 ## Tech Stack
 
