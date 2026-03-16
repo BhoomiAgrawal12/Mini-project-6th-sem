@@ -38,7 +38,7 @@ GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 
 llm = ChatGoogleGenerativeAI(
-    model="gemini-1.5-flash-8b",
+    model="gemini-2.0-flash-lite",
     temperature=0.7,
     google_api_key=GOOGLE_API_KEY,
 )
@@ -256,15 +256,26 @@ async def generate_diet_chart(request: DetailedAssessmentRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-pdf_path = "./archive/json-to-pdf.pdf"
-loader = PyPDFLoader(pdf_path)
-documents = loader.load()
+os.environ["HF_HUB_OFFLINE"] = "1"
+embedding = HuggingFaceEmbeddings(
+    model_name="all-MiniLM-L6-v2",
+    model_kwargs={"device": "cpu"},
+    encode_kwargs={"normalize_embeddings": False},
+)
 
-splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
-docs = splitter.split_documents(documents)
-embedding = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-db = Chroma.from_documents(docs, embedding, persist_directory="./chroma_db")
-db.persist()
+CHROMA_DIR = "./chroma_db"
+if os.path.exists(CHROMA_DIR) and os.listdir(CHROMA_DIR):
+    # Load existing persisted DB — no rebuild needed
+    db = Chroma(persist_directory=CHROMA_DIR, embedding_function=embedding)
+else:
+    # First-time setup: build and persist the vector store
+    pdf_path = "./archive/json-to-pdf.pdf"
+    loader = PyPDFLoader(pdf_path)
+    documents = loader.load()
+    splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
+    docs = splitter.split_documents(documents)
+    db = Chroma.from_documents(docs, embedding, persist_directory=CHROMA_DIR)
+    db.persist()
 
 @app.post("/chat")
 async def chat(request: chatRequest):
