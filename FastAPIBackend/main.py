@@ -1,6 +1,6 @@
 from typing import Dict,List
 from fastapi import FastAPI, HTTPException
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 import os
 import re
@@ -27,7 +27,7 @@ app.add_middleware(
 )
 
 
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY")
 
 # system_prompt = """
 # You are a rehabilitation doctor specializing in post-surgery recovery, physical therapy, 
@@ -37,10 +37,11 @@ GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 # """
 
 
-llm = ChatGoogleGenerativeAI(
-    model="gemini-2.0-flash-lite",
+llm = ChatOpenAI(
+    model="sonar",
     temperature=0.7,
-    google_api_key=GOOGLE_API_KEY,
+    api_key=PERPLEXITY_API_KEY,
+    base_url="https://api.perplexity.ai",
 )
 
 def invoke_with_retry(prompt, max_retries=3):

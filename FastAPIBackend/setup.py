@@ -6,7 +6,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         "langchain",
-        "langchain_google_genai",
+        "langchain_openai",
         "fastapi",
         "uvicorn",
         "python-dotenv",
