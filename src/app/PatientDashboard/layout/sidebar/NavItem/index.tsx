@@ -168,7 +168,7 @@ const NavItem: React.FC<ItemType> = ({ item, level = 1, pathDirect, onClick }) =
           {item.icon && (
             <ListItemIcon
               sx={{
-                minWidth: "36px",
+                minWidth: "26px",
                 p: "3px 0",
                 color: "inherit",
               }}

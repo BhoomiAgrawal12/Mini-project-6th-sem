@@ -76,6 +76,7 @@ export const LoginForm = () => {
                       disabled={isPending}
                       placeholder="abcd.18@example.com"
                       type="email"
+                      className="placeholder:text-gray-400"
                     />
                   </FormControl>
                   <FormMessage />
@@ -94,6 +95,7 @@ export const LoginForm = () => {
                       disabled={isPending}
                       placeholder="******"
                       type="password"
+                      className="placeholder:text-gray-400"
                     />
                   </FormControl>
                   <Button
@@ -111,8 +113,12 @@ export const LoginForm = () => {
           </div>
           <FormError message={error || urlError} />
           <FormSuccess message={success} />
-          <Button type="submit" className="w-full" disabled={isPending}>
-            Login
+          <Button
+            type="submit"
+            className="w-full h-11 rounded-lg text-base font-medium bg-blue-600 hover:bg-blue-700 transition"
+            disabled={isPending}
+          >
+            {isPending ? "Logging in..." : "Login"}
           </Button>
         </form>
       </Form>

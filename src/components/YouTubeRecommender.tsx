@@ -13,7 +13,7 @@ export default function VideoSearch() {
   };
 
   return (
-    <div className="w-full lg-w-[80%] mx-auto p-4 flex flex-col justify-center items-center ">
+    <div className="w-full mx-auto p-4 flex flex-col justify-center items-center ">
       <h1 className="text-3xl w-[60%] font-bold text-center mb-6">YouTube Video Search</h1>
 
       {/* Search Bar */}
