@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Router } from "next/router";
 import Link from "next/link";
+import Loading from "../PatientDashboard/loading";
 
 interface DailyTask {
   id: string;
@@ -60,7 +61,7 @@ const TaskManager = () => {
   }, []);
 
   if (loading) {
-    return <p className="text-center text-gray-500">Loading tasks...</p>;
+    return <Loading />;
   }
 
   const weekTasks = tasks[selectedWeek] || {};
@@ -78,7 +79,7 @@ const TaskManager = () => {
       [selectedWeek]: {
         ...prev[selectedWeek],
         [selectedDay]: prev[selectedWeek][selectedDay].map((task) =>
-          task.id === taskId ? { ...task, status: "completed" } : task
+          task.id === taskId ? { ...task, status: "completed" } : task,
         ),
       },
     }));
@@ -186,15 +187,15 @@ const TaskManager = () => {
                   task.status === "completed"
                     ? "text-green-700"
                     : task.status === "skipped"
-                    ? "text-red-700"
-                    : "text-blue-700"
+                      ? "text-red-700"
+                      : "text-blue-700"
                 }`}
               >
                 {task.status === "completed"
                   ? "Completed"
                   : task.status === "skipped"
-                  ? "Skipped"
-                  : "Pending"}
+                    ? "Skipped"
+                    : "Pending"}
               </span>
 
               <div className="flex items-center mt-4 justify-start gap-2">
@@ -236,15 +237,15 @@ const TaskManager = () => {
                   task.status === "completed"
                     ? "text-green-700"
                     : task.status === "skipped"
-                    ? "text-red-700"
-                    : "text-blue-700"
+                      ? "text-red-700"
+                      : "text-blue-700"
                 }`}
               >
                 {task.status === "completed"
                   ? "Completed"
                   : task.status === "skipped"
-                  ? "Skipped"
-                  : "Pending"}
+                    ? "Skipped"
+                    : "Pending"}
               </span>
 
               <div className="flex items-center mt-4 justify-start gap-2">

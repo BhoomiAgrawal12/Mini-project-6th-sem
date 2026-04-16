@@ -10,9 +10,9 @@ from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 
 from langchain_community.document_loaders import PyPDFLoader
-from langchain_community.vectorstores import Chroma
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_chroma import Chroma
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import HuggingFaceEmbeddings
 load_dotenv()
 
 
@@ -27,7 +27,7 @@ app.add_middleware(
 )
 
 
-PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 # system_prompt = """
 # You are a rehabilitation doctor specializing in post-surgery recovery, physical therapy, 
@@ -38,10 +38,10 @@ PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY")
 
 
 llm = ChatOpenAI(
-    model="sonar",
+    model="llama-3.3-70b-versatile",   # Groq model
     temperature=0.7,
-    api_key=PERPLEXITY_API_KEY,
-    base_url="https://api.perplexity.ai",
+    api_key=GROQ_API_KEY,
+    base_url="https://api.groq.com/openai/v1",
 )
 
 def invoke_with_retry(prompt, max_retries=3):
@@ -313,7 +313,7 @@ async def chat(request: chatRequest):
         latest_message = (chat_history[-1]["content"] if chat_history else "What should I do next?")
 
 
-        chat_history.append({"role": "user", "content": latest_message})
+        # chat_history.append({"role": "user", "content": latest_message})
 
         formatted_history = "\n".join([f"{msg['role']}: {msg['content']}" for msg in chat_history])
  
@@ -321,7 +321,7 @@ async def chat(request: chatRequest):
 
         # response = llm.invoke(formatted_history)
         retriever = db.as_retriever(search_kwargs={"k": 3})
-        retrieved_docs = retriever.get_relevant_documents(latest_message)
+        retrieved_docs = retriever.invoke(latest_message)
         rag_context = "\n".join([doc.page_content for doc in retrieved_docs])
         
         final_prompt = f"""

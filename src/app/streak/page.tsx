@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Flame, Trophy, Target } from "lucide-react";
+import Loading from "../PatientDashboard/loading";
 
 interface ProgressData {
   totalTasks: number;
@@ -27,7 +28,7 @@ function App() {
         setProgressData(data);
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "An unknown error occurred"
+          err instanceof Error ? err.message : "An unknown error occurred",
         );
       }
     };
@@ -35,7 +36,10 @@ function App() {
     fetchProgressData();
   }, []);
 
-  if (!progressData) return <div>Loading...</div>;
+  if (!progressData)
+    return (
+      <Loading />
+    );
 
   return (
     <div className="min-h-screen bg-white p-6">

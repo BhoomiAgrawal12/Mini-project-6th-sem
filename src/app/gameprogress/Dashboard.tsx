@@ -16,6 +16,7 @@ import {
   Filler,
 } from "chart.js";
 import { Line, Bar, Pie, Radar } from "react-chartjs-2";
+import Loading from "../PatientDashboard/loading";
 
 // Register Chart.js components
 ChartJS.register(
@@ -29,7 +30,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  Filler
+  Filler,
 );
 
 interface GameProgress {
@@ -92,7 +93,7 @@ export default function Dashboard({ initialData }: DashboardProps) {
     const avgScore =
       gameData.reduce((sum, game) => sum + game.score, 0) / gameData.length;
     const gamesWithAccuracy = gameData.filter(
-      (game) => game.accuracy !== null && game.accuracy !== undefined
+      (game) => game.accuracy !== null && game.accuracy !== undefined,
     );
     const avgAccuracy = gamesWithAccuracy.length
       ? gamesWithAccuracy.reduce((sum, game) => sum + (game.accuracy || 0), 0) /
@@ -100,7 +101,7 @@ export default function Dashboard({ initialData }: DashboardProps) {
       : 0;
 
     const gamesWithTime = gameData.filter(
-      (game) => game.timeSpent !== null && game.timeSpent !== undefined
+      (game) => game.timeSpent !== null && game.timeSpent !== undefined,
     );
     const avgTimeSpent = gamesWithTime.length
       ? gamesWithTime.reduce((sum, game) => sum + (game.timeSpent || 0), 0) /
@@ -160,14 +161,14 @@ export default function Dashboard({ initialData }: DashboardProps) {
           selectedMetric === "score"
             ? "Score"
             : selectedMetric === "accuracy"
-            ? "Accuracy (%)"
-            : "Time Spent (min)",
+              ? "Accuracy (%)"
+              : "Time Spent (min)",
         data: filteredData.map((game) =>
           selectedMetric === "score"
             ? game.score
             : selectedMetric === "accuracy"
-            ? (game.accuracy || 0) * 100
-            : (game.timeSpent || 0) / 60
+              ? (game.accuracy || 0) * 100
+              : (game.timeSpent || 0) / 60,
         ),
         borderColor: "#10B981",
         backgroundColor: "rgba(16, 185, 129, 0.2)",
@@ -216,14 +217,14 @@ export default function Dashboard({ initialData }: DashboardProps) {
             (gameData.length || 1),
           gameData.reduce(
             (sum, game) => sum + (game.frustrationScore || 0),
-            0
+            0,
           ) /
             (gameData.length || 1) /
             10,
           gameData.reduce((sum, game) => sum + (game.challengesDone || 0), 0) /
             (gameData.reduce(
               (sum, game) => sum + (game.challengesDone || 0),
-              0
+              0,
             ) +
               gameData.length) || 0,
         ],
@@ -240,7 +241,7 @@ export default function Dashboard({ initialData }: DashboardProps) {
   const badgesChartData = {
     labels: [...new Set(gameData.flatMap((game) => game.badgesEarned))].slice(
       0,
-      8
+      8,
     ),
     datasets: [
       {
@@ -250,7 +251,7 @@ export default function Dashboard({ initialData }: DashboardProps) {
           .map(
             (badge) =>
               gameData.filter((game) => game.badgesEarned.includes(badge))
-                .length
+                .length,
           ),
         backgroundColor: "rgba(251, 146, 60, 0.7)",
         borderColor: "#F97316",
@@ -337,9 +338,7 @@ export default function Dashboard({ initialData }: DashboardProps) {
         </header>
 
         {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <p className="text-gray-500">Loading game data...</p>
-          </div>
+          <Loading />
         ) : (
           <>
             {/* Filters and Controls */}
@@ -454,8 +453,8 @@ export default function Dashboard({ initialData }: DashboardProps) {
                   {selectedMetric === "score"
                     ? "Score Progress"
                     : selectedMetric === "accuracy"
-                    ? "Accuracy Trend"
-                    : "Time Spent Tracking"}
+                      ? "Accuracy Trend"
+                      : "Time Spent Tracking"}
                 </h2>
                 {filteredData.length > 0 ? (
                   <Line data={progressChartData} options={chartOptions} />
@@ -581,10 +580,10 @@ export default function Dashboard({ initialData }: DashboardProps) {
                               game.difficulty === "Easy"
                                 ? "bg-green-100 text-green-800"
                                 : game.difficulty === "Medium"
-                                ? "bg-blue-100 text-blue-800"
-                                : game.difficulty === "Hard"
-                                ? "bg-red-100 text-red-800"
-                                : "bg-purple-100 text-purple-800"
+                                  ? "bg-blue-100 text-blue-800"
+                                  : game.difficulty === "Hard"
+                                    ? "bg-red-100 text-red-800"
+                                    : "bg-purple-100 text-purple-800"
                             }`}
                           >
                             {game.difficulty}

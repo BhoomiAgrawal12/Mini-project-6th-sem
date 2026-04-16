@@ -150,7 +150,7 @@ const MSidebar = ({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }: ItemTy
               },
             }}
           >
-            <Box sx={{ height: "100%" }}>
+            <Box>
               <Sidebar
                 width={"270px"}
                 collapsewidth="80px"

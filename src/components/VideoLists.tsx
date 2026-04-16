@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Loading from "@/app/PatientDashboard/loading"; 
 
 interface Video {
   id: string;
@@ -40,7 +41,7 @@ export default function VideoList({ query }: { query: string }) {
     fetchVideos();
   }, [query]);
 
-  if (loading) return <p className="text-center text-gray-500">Loading...</p>;
+  if (loading) return <Loading />;
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
   if (!videos.length)
     return <p className="text-center text-gray-500">No videos found.</p>;
