@@ -166,7 +166,7 @@ export default function ChatScreening({ onDetectedDiseases }: { onDetectedDiseas
             <div className="grid grid-cols-4 gap-y-2">
               {messages.map((msg) => (
                 <div key={msg.id} className={`p-3 rounded-lg ${msg.sender === 'bot' ? 'col-start-1 col-end-8' : 'col-start-6 col-end-13'}`}> 
-                  <div className={`flex ${msg.sender === 'bot' ? 'flex-row' : 'flex-row-reverse'}`}> 
+                  <div className={`flex ${msg.sender === 'bot' ? 'flex-row' : 'flex-row-reverse gap-4'}`}> 
                     <img src={msg.sender === 'bot' ? botAvatar : userAvatar} className="h-10 w-10 rounded-full" />
                     <div className={`relative ml-3 text-xl ${msg.sender === 'bot' ? 'bg-white' : 'bg-indigo-100'} py-2 px-4 shadow rounded-xl`}> 
                       {msg.text}

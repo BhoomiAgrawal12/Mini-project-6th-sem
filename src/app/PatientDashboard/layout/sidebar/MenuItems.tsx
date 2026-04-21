@@ -5,8 +5,6 @@ import {
   IconHeartbeat,
   IconRun,
   IconUsers,
-  IconLogin,
-  IconUserPlus,
   IconListCheck,
   IconRobot,
 } from "@tabler/icons-react";
@@ -16,11 +14,6 @@ const Menuitems = [
     navlabel: true,
     subheader: "PATIENT DASHBOARD",
   },
-  // {
-  //   title: "Landing Page",
-  //   icon: IconHome2,
-  //   href: "/LandingPage",
-  // },
   {
     title: "Patient Dashboard",
     icon: IconHome2,
@@ -76,16 +69,6 @@ const Menuitems = [
     icon: IconUsers,
     href: "/PatientDashboard/PatientPage/Community",
   },
-  // {
-  //   title: "Login",
-  //   icon: IconLogin,
-  //   href: "/authentication/login",
-  // },
-  // {
-  //   title: "Register",
-  //   icon: IconUserPlus,
-  //   href: "/authentication/register",
-  // },
 ];
 
 export default Menuitems;

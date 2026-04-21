@@ -172,7 +172,12 @@ type Message = {
 };
 
 export default function Chat({ diseases, responses }: ChatProps) {
-  const [chatHistory, setChatHistory] = useState<Message[]>([]);
+  const [chatHistory, setChatHistory] = useState<Message[]>([
+    {
+      role: "bot",
+      content: "Welcome! Type your response below and hit send to continue the chat.",
+    },
+  ]);
   const [input, setInput] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 

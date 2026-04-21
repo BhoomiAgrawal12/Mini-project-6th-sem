@@ -1,9 +1,7 @@
-
 "use client";
+import { useState, useEffect } from "react";
 import { styled, Container, Box } from "@mui/material";
-// import React, { useState } from "react";
-// import Header from "@/app/PatientDashboard/layout/header/Header";
-// import Sidebar from "@/app/PatientDashboard/layout/sidebar/Sidebar";
+import Loading from "@/app/PatientDashboard/loading"; 
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",
@@ -19,20 +17,24 @@ const PageWrapper = styled("div")(() => ({
   backgroundColor: "transparent",
 }));
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  // const [isMobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // simulate API / data load
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <MainWrapper>
-      {/* <Sidebar
-        isSidebarOpen={true} // Keeping the sidebar always open if no toggle is needed
-        isMobileSidebarOpen={isMobileSidebarOpen}
-        onSidebarClose={() => setMobileSidebarOpen(false)}
-      /> */}
       <PageWrapper>
-        {/* <Header toggleMobileSidebar={() => setMobileSidebarOpen(true)} /> */}
         <Container
-          maxWidth={false} // Disables default max width
+          maxWidth={false}
           sx={{
             paddingTop: "20px",
             width: "100%",
@@ -42,8 +44,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             paddingRight: 0,
           }}
         >
-          <Box sx={{ minHeight: "calc(100vh - 170px)", width: "100%", display: "flex", padding: 0, margin: 0 }}>
-            {children} {/* Ensures the correct content is displayed */}
+          <Box
+            sx={{
+              minHeight: "calc(100vh - 170px)",
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {loading ? <Loading /> : children}
           </Box>
         </Container>
       </PageWrapper>
