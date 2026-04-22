@@ -153,45 +153,43 @@ export default function ChatScreening({ onDetectedDiseases }: { onDetectedDiseas
   };
 
   return (
-    <div className="flex max-w-9xl h-screen antialiased text-gray-800">
-      <div className="flex flex-col w-full flex-auto h-full p-6">
-        <div className="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-100 h-full p-4">
-          <div className="flex flex-row items-center justify-center h-12 w-full">
-            <div className="flex items-center justify-center mb-8 rounded-2xl text-indigo-700 bg-indigo-100 h-10 w-10">
-              <Stethoscope className="w-6 h-6" />
-            </div>
-            <div className="ml-2 font-bold text-blue-700 mb-8 text-4xl">MediMind AI Chat</div>
+    <div className="w-full antialiased text-gray-800">
+      <div className="flex flex-col rounded-2xl bg-gray-100 p-4">
+        <div className="flex flex-row items-center justify-center h-12 w-full mb-4">
+          <div className="flex items-center justify-center rounded-2xl text-indigo-700 bg-indigo-100 h-10 w-10">
+            <Stethoscope className="w-6 h-6" />
           </div>
-          <div className="flex flex-col h-full overflow-y-auto mb-4">
-            <div className="grid grid-cols-4 gap-y-2">
-              {messages.map((msg) => (
-                <div key={msg.id} className={`p-3 rounded-lg ${msg.sender === 'bot' ? 'col-start-1 col-end-8' : 'col-start-6 col-end-13'}`}> 
-                  <div className={`flex ${msg.sender === 'bot' ? 'flex-row' : 'flex-row-reverse gap-4'}`}> 
-                    <img src={msg.sender === 'bot' ? botAvatar : userAvatar} className="h-10 w-10 rounded-full" />
-                    <div className={`relative ml-3 text-xl ${msg.sender === 'bot' ? 'bg-white' : 'bg-indigo-100'} py-2 px-4 shadow rounded-xl`}> 
-                      {msg.text}
-                    </div>
+          <div className="ml-2 font-bold text-blue-700 text-4xl">MediMind AI Chat</div>
+        </div>
+        <div className="max-h-[55vh] overflow-y-auto mb-4">
+          <div className="grid grid-cols-4 gap-y-2">
+            {messages.map((msg) => (
+              <div key={msg.id} className={`p-3 rounded-lg ${msg.sender === 'bot' ? 'col-start-1 col-end-8' : 'col-start-6 col-end-13'}`}>
+                <div className={`flex ${msg.sender === 'bot' ? 'flex-row' : 'flex-row-reverse gap-4'}`}>
+                  <img src={msg.sender === 'bot' ? botAvatar : userAvatar} className="h-10 w-10 rounded-full" />
+                  <div className={`relative ml-3 text-xl ${msg.sender === 'bot' ? 'bg-white' : 'bg-indigo-100'} py-2 px-4 shadow rounded-xl`}>
+                    {msg.text}
                   </div>
                 </div>
-              ))}
-              <div ref={chatEndRef} />
-            </div>
+              </div>
+            ))}
+            <div ref={chatEndRef} />
           </div>
-          <div className="flex items-center space-x-2 p-4 bg-white rounded-xl">
-            <button className="bg-gray-300 px-4 py-2 rounded" onClick={() => handleUserResponse('Yes')}>Yes</button>
-            <button className="bg-gray-300 px-4 py-2 rounded" onClick={() => handleUserResponse('No')}>No</button>
-            <input 
-              type="text" 
-              className="flex-grow p-2 border rounded" 
-              value={input} 
-              onChange={(e) => setInput(e.target.value)} 
-              placeholder="Type your response..." 
-              onKeyDown={(e) => e.key === 'Enter' && input.trim() && (handleUserResponse(input), setInput(''))}
-            />
-            <button onClick={() => { if (input.trim()) { handleUserResponse(input); setInput(''); } }}>
-              <Send className="w-6 h-6 text-blue-500" />
-            </button>
-          </div>
+        </div>
+        <div className="flex items-center space-x-2 p-4 bg-white rounded-xl">
+          <button className="bg-gray-300 px-4 py-2 rounded" onClick={() => handleUserResponse('Yes')}>Yes</button>
+          <button className="bg-gray-300 px-4 py-2 rounded" onClick={() => handleUserResponse('No')}>No</button>
+          <input
+            type="text"
+            className="flex-grow p-2 border rounded"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Type your response..."
+            onKeyDown={(e) => e.key === 'Enter' && input.trim() && (handleUserResponse(input), setInput(''))}
+          />
+          <button onClick={() => { if (input.trim()) { handleUserResponse(input); setInput(''); } }}>
+            <Send className="w-6 h-6 text-blue-500" />
+          </button>
         </div>
       </div>
     </div>

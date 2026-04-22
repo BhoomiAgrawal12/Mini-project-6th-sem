@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { FaUtensils, FaAppleAlt, FaExclamationTriangle, FaClipboardList, FaHeartbeat, FaDownload, FaShareAlt, FaRedo } from "react-icons/fa";
+import { FaUtensils, FaAppleAlt, FaExclamationTriangle, FaClipboardList, FaHeartbeat, FaDownload, FaShareAlt, FaRedo, FaArrowLeft } from "react-icons/fa";
 
 interface DietPlan {
   focus: string;
@@ -146,7 +146,10 @@ export default function Diet() {
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-4 mt-6">
+          <div className="flex gap-4 mt-6 flex-wrap">
+            <button className="bg-gray-500 text-white px-4 py-2 rounded-lg flex items-center gap-2" onClick={() => router.back()}>
+              <FaArrowLeft /> Back to Chat
+            </button>
             <button className="bg-green-500 text-white px-4 py-2 rounded-lg flex items-center gap-2" onClick={downloadDietPlan}>
               <FaDownload /> Download
             </button>

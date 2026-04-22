@@ -83,7 +83,7 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
             </Button>
           ) : isLoggedIn ? (
             // User is logged in, show Sign Out button
-            <form onSubmit={handleSignOut}>
+            <form action={handleSignOut}>
               <Button
                 type="submit"
                 variant="contained"

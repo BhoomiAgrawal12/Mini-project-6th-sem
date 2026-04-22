@@ -152,7 +152,8 @@
 //     </div>
 //   );
 // }
-import { useState } from "react";
+"use client";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { Stethoscope } from "lucide-react";
 
@@ -180,6 +181,11 @@ export default function Chat({ diseases, responses }: ChatProps) {
   ]);
   const [input, setInput] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatHistory]);
 
   const handleChat = async () => {
     if (!input.trim()) return;
@@ -205,8 +211,12 @@ export default function Chat({ diseases, responses }: ChatProps) {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && !loading) handleChat();
+  };
+
   return (
-    <div className="p-4 w-full max-w-5xl mx-auto bg-gray-50 rounded-lg shadow-md">
+    <div className="w-full max-w-5xl mx-auto bg-gray-50 rounded-lg shadow-md p-4">
       {/* Header */}
       <div className="flex items-center justify-center mb-4">
         <div className="flex items-center justify-center rounded-full text-indigo-700 bg-indigo-100 h-12 w-12">
@@ -215,8 +225,8 @@ export default function Chat({ diseases, responses }: ChatProps) {
         <h1 className="ml-3 font-bold text-blue-700 text-3xl">MediMind AI Chat</h1>
       </div>
 
-      {/* Chat Container */}
-      <div className="border p-4 bg-white rounded-lg max-h-[90vh] overflow-y-auto space-y-3">
+      {/* Chat Container - scrollable only when messages overflow */}
+      <div className="max-h-[55vh] overflow-y-auto border p-4 bg-white rounded-lg space-y-3">
         {chatHistory.map((msg, index) => (
           <div key={index} className={`flex items-start ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
             {msg.role === "bot" && <img src={botAvatar} className="w-8 h-8 rounded-full mr-2" alt="Bot" />}
@@ -226,6 +236,7 @@ export default function Chat({ diseases, responses }: ChatProps) {
             {msg.role === "user" && <img src={userAvatar} className="w-8 h-8 rounded-full ml-2" alt="User" />}
           </div>
         ))}
+        <div ref={messagesEndRef} />
       </div>
 
       {/* Input & Buttons */}
@@ -235,6 +246,7 @@ export default function Chat({ diseases, responses }: ChatProps) {
           placeholder="Type your response..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
         <button
           className="bg-purple-500 text-white px-4 py-2 rounded-lg"
@@ -246,7 +258,7 @@ export default function Chat({ diseases, responses }: ChatProps) {
       </div>
 
       {/* Additional Buttons */}
-      <div className="mt-4 flex gap-4 justify-center">
+      <div className="mt-3 flex gap-4 justify-center">
         <Link href={`/pages/diet?disease=${encodeURIComponent(diseases.join(","))}&responses=${encodeURIComponent(JSON.stringify(responses))}`}>
           <button className="bg-green-500 text-white px-4 py-2 rounded-lg">View Diet Chart</button>
         </Link>

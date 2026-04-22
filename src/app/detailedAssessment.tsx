@@ -124,32 +124,27 @@ export default function DetailedAssessment({
 
         if (!res.ok) throw new Error(`Error ${res.status}: ${await res.text()}`);
 
-        for (let i = 0; i < diseases.length; i++) {
-          const taskResponse = await fetch("/api/tasks/assign", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ disease: diseases[i], severity: "mild" }),
-          });
-          if (!taskResponse.ok) {
-            const errorText = await taskResponse.text();
-            throw new Error(`Error ${taskResponse.status}: ${errorText}`);
-          }
-        }
-
-        for (let i = 0; i < diseases.length; i++) {
-          await fetch("/api/youtube-activities/assign", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ disease: diseases[i], severity: "mild" }),
-          });
-        }
-
         const data = await res.json();
         setQuestions(data.questions || {});
         setMessages([{ id: "1", text: data.message, sender: "bot" }]);
-        
+
         if (diseases.length > 0 && data.questions[diseases[0]]?.length > 0) {
           setMessages(prev => [...prev, { id: "2", text: `Assessment started for ${diseases[0]}. ${data.questions[diseases[0]][0]}`, sender: "bot" }]);
+        }
+
+        // Assign tasks and youtube activities in the background — don't block on failure
+        for (const disease of diseases) {
+          fetch("/api/tasks/assign", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ disease, severity: "mild" }),
+          }).catch(() => {});
+
+          fetch("/api/youtube-activities/assign", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ disease, severity: "mild" }),
+          }).catch(() => {});
         }
       } catch (error) {
         setError(error instanceof Error ? error.message : "Failed to load questions.");
@@ -166,15 +161,14 @@ export default function DetailedAssessment({
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleSend = () => {
-    if (!input.trim()) return;
+  const processAnswer = (answer: string) => {
+    if (!answer.trim()) return;
     const currentDisease = diseases[currentDiseaseIndex];
     const currentQuestion = questions[currentDisease]?.[currentQuestionIndex];
 
-    // Build updated responses synchronously so we always have the latest answer
-    const updatedResponses = { ...responses, [currentQuestion]: input };
+    const updatedResponses = { ...responses, [currentQuestion]: answer };
 
-    setMessages(prev => [...prev, { id: Date.now().toString(), text: input, sender: "user" }]);
+    setMessages(prev => [...prev, { id: Date.now().toString(), text: answer, sender: "user" }]);
     setResponses(updatedResponses);
     setInput("");
 
@@ -193,40 +187,49 @@ export default function DetailedAssessment({
         setMessages(prev => [...prev, { id: Date.now().toString(), text: questions[nextDisease][0], sender: "bot" }]);
       }, 500);
     } else {
-      // Pass the synchronously-built responses so the last answer is included
       onComplete(updatedResponses);
     }
   };
 
+  const handleSend = () => processAnswer(input);
+
   return (
-    <div className="flex max-w-9xl h-screen antialiased text-gray-800">
-      <div className="flex flex-col w-full flex-auto h-full p-6">
-        <div className="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-100 h-full p-4">
-          <div className="flex flex-row items-center justify-center h-12 w-full mb-4">
-            <div className="flex items-center justify-center rounded-2xl text-indigo-700 bg-indigo-100 h-10 w-10">
-              <Stethoscope className="w-6 h-6" />
-            </div>
-            <div className="ml-2 font-bold text-blue-700 text-4xl">MediMind AI Chat</div>
+    <div className="w-full antialiased text-gray-800">
+      <div className="flex flex-col rounded-2xl bg-gray-100 p-4">
+        <div className="flex flex-row items-center justify-center h-12 w-full mb-4">
+          <div className="flex items-center justify-center rounded-2xl text-indigo-700 bg-indigo-100 h-10 w-10">
+            <Stethoscope className="w-6 h-6" />
           </div>
-          {error && <div className="text-red-500 text-center">{error}</div>}
-          <div className="flex flex-col space-y-2 overflow-auto h-full">
-            {messages.map((msg) => (
-              <div key={msg.id} className={`flex ${msg.sender === "bot" ? "justify-start" : "justify-end"}`}>
-                <div className={`p-3 rounded-lg ${msg.sender === "bot" ? "bg-gray-300" : "bg-blue-500 text-white"}`}>{msg.text}</div>
+          <div className="ml-2 font-bold text-blue-700 text-4xl">MediMind AI Chat</div>
+        </div>
+        {error && <div className="text-red-500 text-center mb-2">{error}</div>}
+        <div className="max-h-[55vh] overflow-y-auto mb-4 space-y-2">
+          {messages.map((msg) => (
+            <div key={msg.id} className={`p-3 rounded-lg ${msg.sender === "bot" ? "col-start-1 col-end-8" : "col-start-6 col-end-13"}`}>
+              <div className={`flex ${msg.sender === "bot" ? "flex-row" : "flex-row-reverse gap-4"}`}>
+                <img src={msg.sender === "bot" ? botAvatar : userAvatar} className="h-10 w-10 rounded-full" />
+                <div className={`relative ml-3 text-xl ${msg.sender === "bot" ? "bg-white" : "bg-indigo-100"} py-2 px-4 shadow rounded-xl`}>
+                  {msg.text}
+                </div>
               </div>
-            ))}
-            <div ref={chatEndRef} />
-          </div>
-          <div className="flex mt-4">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              className="flex-grow p-2 border rounded-lg"
-              placeholder="Type your response..."
-            />
-            <button onClick={handleSend} className="ml-2 p-2 bg-blue-500 text-white rounded-lg"><Send /></button>
-          </div>
+            </div>
+          ))}
+          <div ref={chatEndRef} />
+        </div>
+        <div className="flex items-center space-x-2 p-4 bg-white rounded-xl">
+          <button className="bg-gray-300 px-4 py-2 rounded" onClick={() => processAnswer("Yes")}>Yes</button>
+          <button className="bg-gray-300 px-4 py-2 rounded" onClick={() => processAnswer("No")}>No</button>
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            className="flex-grow p-2 border rounded"
+            placeholder="Type your response..."
+          />
+          <button onClick={handleSend}>
+            <Send className="w-6 h-6 text-blue-500" />
+          </button>
         </div>
       </div>
     </div>
